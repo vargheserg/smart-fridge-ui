@@ -1,0 +1,10 @@
+.card-component{
+    display: flex;
+    flex-flow: row wrap;
+    padding: 60px 400px;
+}
+
+.card{
+    display: inline-block;
+    margin: 0 auto;
+}
