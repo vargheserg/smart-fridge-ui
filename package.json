@@ -1,5 +1,6 @@
 {
   "name": "capstone-interface",
+  "homepage": "https://vargheserg.github.io/smart-fridge-ui",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
