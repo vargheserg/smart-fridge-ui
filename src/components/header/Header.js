@@ -21,9 +21,9 @@ class Header extends React.Component {
     return (
       <div className="header">
         Smart Fridge Prototype {this.state.header}
-        <button onClick={this.getHeader}>
+        {/* <button onClick={this.getHeader}>
         Click me!
-        </button>
+        </button> */}
       </div>
     );
   }
