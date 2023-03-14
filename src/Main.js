@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/dashboard/Dashboard';
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
+import Fridges from './pages/fridges/Fridges';
 import { UserContext } from './UserContext';
 import { getUserFromDB } from './firebase/firebase';
 
@@ -21,6 +22,8 @@ const Main = () => {
         if (user) {
           setUser(user);
         }
+      } else if(!userAcc && !sessionStorage.getItem("uid") && !sessionStorage.getItem("Auth Token") && !window.location.href.includes('/login') &&!window.location.href.includes('/signup')) {
+        window.location.href = '/login';
       }
     };
     populateUserAcc();
@@ -32,6 +35,7 @@ const Main = () => {
         <Route exact path='/' element={<Dashboard/>}></Route>
         <Route exact path='/login'  element={<Login/>}></Route>
         <Route exact path='/signup' element={<Signup/>}></Route>
+        <Route exact path='/fridges' element={<Fridges/>}></Route>
       </Routes>  
     </UserContext.Provider>
   );

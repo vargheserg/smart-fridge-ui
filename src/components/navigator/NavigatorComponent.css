@@ -1,0 +1,29 @@
+.nav-component{
+    position: fixed;
+    display: flex;
+    width: 100%;
+    bottom: 2em;
+    margin: auto;
+    flex-flow: row wrap;
+    padding: 60px 400px;
+    font-size: 20px;
+}
+
+.vr{
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.card{
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.svg-inline--fa {
+    transition: 0.3s;
+}
+
+.svg-inline--fa:hover {
+    color: gray;
+    transition: 0.3s;
+}
