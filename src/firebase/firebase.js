@@ -44,8 +44,7 @@ const getUserFromDB = async (uid) => {
     try {
       const userQuery = query(collection(db, "users"), where("uid", "==", uid));
       const doc = await getDocs(userQuery);
-      const data = doc.docs[0].data();
-  
+      const id = doc.docs[0].id
       const data = {doc_id: id, ...doc.docs[0].data()};
       return data;
     } catch (err) {
