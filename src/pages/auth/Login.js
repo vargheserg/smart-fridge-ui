@@ -23,7 +23,6 @@ const Login = () => {
   const onLogin = async () => {
     console.log('You clicked login.');
     const response = await logInWithEmailAndPassword(email, password);
-    console.log(response);
     sessionStorage.setItem("Auth Token", response._tokenResponse.refreshToken);
     sessionStorage.setItem("uid", response.user.uid);
 
@@ -32,6 +31,12 @@ const Login = () => {
     setUser(userinfo);
     console.log(userAcc);
     navigate("/");
+  }
+
+  const onKeyPress = async (e) => {
+    if(e.key === 'Enter') {
+      await onLogin();
+    }
   }
 
   return (
@@ -60,6 +65,7 @@ const Login = () => {
                         name="username"
                         type="email"
                         onChange={(e) => setEmail(e.target.value)}
+                        onKeyDown={onKeyPress}
                         placeholder="name@example.com"
                         required
                       />
@@ -71,6 +77,7 @@ const Login = () => {
                         id="floatingPassword"
                         name="password"
                         type="password"
+                        onKeyDown={onKeyPress}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Password"
                         required

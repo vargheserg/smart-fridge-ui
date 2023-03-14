@@ -32,7 +32,7 @@ const Main = () => {
   return (
     <UserContext.Provider value={[userAcc, setUser]}>
       <Routes>
-        <Route exact path='/' element={<Dashboard/>}></Route>
+        <Route exact path='/:fridge_id' element={<Dashboard/>}></Route>
         <Route exact path='/login'  element={<Login/>}></Route>
         <Route exact path='/signup' element={<Signup/>}></Route>
         <Route exact path='/fridges' element={<Fridges/>}></Route>

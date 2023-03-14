@@ -72,6 +72,21 @@ const getFridgesFromDB = async (uid) => {
   }
 };
 
+const getFridgeFromDB = async (uid, fridge_id) => {
+  try {
+    const user_doc = await getUserFromDB(uid)
+    const user_doc_id = user_doc.doc_id
+    const fridgeQuery = query(collection(db, "users", user_doc_id, "fridges"));
+    const doc = await getDocs(fridgeQuery);
+    const data = doc.docs.find(docRef => fridge_id === docRef.id).data();
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    alert(err.message);
+  }
+};
+
 
 const logout = () => {
     signOut(auth);
@@ -84,5 +99,6 @@ export {
     registerWithEmailAndPassword,
     getUserFromDB,
     logout,
-    getFridgesFromDB
+    getFridgesFromDB,
+    getFridgeFromDB
 };
