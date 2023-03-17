@@ -24,7 +24,7 @@ const Signup = () => {
     sessionStorage.setItem("uid", response.user.uid);
     const userinfo = await getUserFromDB(response.user.uid);
     setUser(userinfo);
-    navigate("/");
+    navigate("/fridges");
   };
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const Signup = () => {
 
     if (authToken) {
       // User is logged in, user needs to logout to register
-      navigate("/");
+      navigate("/fridges");
     }
   }, []);
 

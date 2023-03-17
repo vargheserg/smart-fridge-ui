@@ -30,7 +30,7 @@ const Login = () => {
     const userinfo = await getUserFromDB(response.user.uid);
     setUser(userinfo);
     console.log(userAcc);
-    navigate("/");
+    navigate("/fridges");
   }
 
   const onKeyPress = async (e) => {

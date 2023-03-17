@@ -46,8 +46,6 @@ const FridgeList = () => {
   // Add Module
 
   const addNewFridge = () => {
-    const authToken = sessionStorage.getItem("Auth Token");
-    const uid = sessionStorage.getItem("uid");
     const request = {
       email: userAcc.email,
       fridge_id: fridgeId,
@@ -66,7 +64,9 @@ const FridgeList = () => {
 
   useEffect(() => {
     const ip_rx=/^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/;
-    const uniqueFridgeId = getFridgeFromDB(sessionStorage.getItem("uid"), fridgeId) == null;
+    const fridge = fridges.find(fridge => fridge.doc_id == fridgeId)
+    const uniqueFridgeId = fridge == null;
+    console.log(`${ip_rx.test(fridgeIp)} ${fridgeId.length} ${fridge}`);
     if(ip_rx.test(fridgeIp) && fridgeId.length > 0 && uniqueFridgeId) {
       fetch(`http://${fridgeIp}:5000/health`, {method: "GET"})
         .then(response => response.json())
