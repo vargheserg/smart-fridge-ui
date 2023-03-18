@@ -78,8 +78,11 @@ const getFridgeFromDB = async (uid, fridge_id) => {
     const user_doc_id = user_doc.doc_id
     const fridgeQuery = query(collection(db, "users", user_doc_id, "fridges"));
     const doc = await getDocs(fridgeQuery);
-    const data = doc.docs.find(docRef => fridge_id === docRef.id).data();
-    return data;
+    const fridge_doc = doc.docs.find(docRef => fridge_id === docRef.id);
+    if(fridge_doc != null){
+      return fridge_doc.data();
+    }
+    return null;
   } catch (err) {
     console.log(err);
     alert(err.message);
