@@ -38,17 +38,17 @@ function Dashboard() {
       <div class="card-component">
         <Card style={{ width: '18rem' }} class="card">
           <Card.Body>
-            <Card.Title>My Fridge's Contents</Card.Title>
+            <Card.Title>Ingredients</Card.Title>
             <ListGroup variant="flush">
-            {fridge.items.map((item) => 
-              <ListGroup.Item key={item}>{item}</ListGroup.Item>
+            {Object.keys(fridge.items).map((key) => 
+              <ListGroup.Item key={key}>{key} {fridge.items[key]}</ListGroup.Item>
             )}
             </ListGroup>
           </Card.Body>
         </Card>
         <Card style={{ width: '18rem' }} class="card">
           <Card.Body>
-            <Card.Title>Tracking</Card.Title>
+            <Card.Title>Grocery List</Card.Title>
             <ListGroup variant="flush">
             {fridge.tracking.map((item) => 
               <ListGroup.Item key={item}>{item}</ListGroup.Item>
