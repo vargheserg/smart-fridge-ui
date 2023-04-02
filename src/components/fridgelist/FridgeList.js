@@ -54,7 +54,16 @@ const FridgeList = () => {
     };
     fetch(`http://${fridgeIp}:5000/register`, {method: "POST", body: JSON.stringify(request), headers: {'Content-Type': 'application/json'}})
         .then(response => response.json())
-        .then();
+        .then((res) => {
+            if (res) {
+              // Re-fetch fridges after successfully registering it
+              const authToken = sessionStorage.getItem("Auth Token");
+              const uid = sessionStorage.getItem("uid");
+              if (uid && authToken) {
+                retrieveFridges(uid);
+              }
+            }
+        });
     setShow(false);
   };
   const handleClose = () => {
