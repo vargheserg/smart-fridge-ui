@@ -17,7 +17,6 @@ function Dashboard() {
 
   const retrieveFridge = async (uid) => {
     const data = await getFridgeFromDB(uid, fridge_id);
-    console.log(data);
     if(data != null)
       setFridge(data);
   };

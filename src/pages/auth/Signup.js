@@ -18,8 +18,6 @@ const Signup = () => {
   const register = async () => {
     if (!name) alert("Please enter name");
     const response = await registerWithEmailAndPassword(name, email, password);
-    console.log("registered email and password");
-    console.log(response);
     sessionStorage.setItem('Auth Token', response._tokenResponse.refreshToken);
     sessionStorage.setItem("uid", response.user.uid);
     const userinfo = await getUserFromDB(response.user.uid);

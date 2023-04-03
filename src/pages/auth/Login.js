@@ -21,7 +21,6 @@ const Login = () => {
   }, [user, loading]);
 
   const onLogin = async () => {
-    console.log('You clicked login.');
     const response = await logInWithEmailAndPassword(email, password);
     sessionStorage.setItem("Auth Token", response._tokenResponse.refreshToken);
     sessionStorage.setItem("uid", response.user.uid);
@@ -29,7 +28,6 @@ const Login = () => {
     // Fetch user from firestore
     const userinfo = await getUserFromDB(response.user.uid);
     setUser(userinfo);
-    console.log(userAcc);
     navigate("/fridges");
   }
 

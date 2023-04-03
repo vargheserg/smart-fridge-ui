@@ -66,16 +66,43 @@ const FridgeList = () => {
         });
     setShow(false);
   };
+    e.stopPropagation();
+    if(fridge != null && fridge.ip != null)
+    fetch(`http://${fridge.ip}:5000/deregister`, {method: "DELETE", headers: {'Content-Type': 'application/json'}})
+        .then(response => response.json())
+        .then((res) => {
+            if (res) {
+              // Re-fetch fridges after successfully deregistering it
+              const authToken = sessionStorage.getItem("Auth Token");
+              const uid = sessionStorage.getItem("uid");
+              if (uid && authToken) {
+                retrieveFridges(uid);
+              }
+            }
+        });
+
+  };
+
+  const getStatus = (fridge) => {
+    const yesterday = new Date(new Date().setDate(new Date().getDate()-1));
+    if(fridge.last_updated.toDate() > yesterday) {
+      return "green"
+    } else {
+      return "#cc980a"
+    }
+
+  };
+
   const handleClose = () => {
     setShow(false)
   };
+
   const handleShow = () => setShow(true);
 
   useEffect(() => {
     const ip_rx=/^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/;
     const fridge = fridges.find(fridge => fridge.doc_id == fridgeId)
     const uniqueFridgeId = fridge == null;
-    console.log(`${ip_rx.test(fridgeIp)} ${fridgeId.length} ${fridge}`);
     if(ip_rx.test(fridgeIp) && fridgeId.length > 0 && uniqueFridgeId) {
       fetch(`http://${fridgeIp}:5000/health`, {method: "GET"})
         .then(response => response.json())
@@ -103,14 +130,15 @@ const FridgeList = () => {
   return (
     <div class="card-component grid">
       {fridges.map((fridge) => 
-      <Card key={fridge.doc_id} data={fridge} style={{ width: '18rem' }} class="card" onClick={(e) => navigate(`/${fridge.doc_id}`)}>
+      <Card key={fridge.doc_id} data={fridge} style={{ width: '18rem' }} class="card fridge-card" onClick={(e) => navigate(`/${fridge.doc_id}`)}>
         <Card.Body>
-          <Card.Title>{fridge.name} <FontAwesomeIcon style={{color:'green', size:'10px'}} icon = {faCircle}/></Card.Title>
+          <Card.Title>{fridge.name} <FontAwesomeIcon style={{color: getStatus(fridge), size:'10px'}} icon = {faCircle}/></Card.Title>
           <ListGroup.Item>Last Updated: {new Date(fridge.last_updated * 1000).toUTCString()}</ListGroup.Item>
+          <Button variant="danger" style={{ marginTop: '1rem' }} onClick={(event) => deleteFridge(event, fridge)}>Remove</Button>
         </Card.Body>
       </Card>
       )}
-      <Card style={{ width: '18rem' }} class="card" onClick={handleShow}>
+      <Card style={{ width: '18rem' }} class="fridge-card card" onClick={handleShow}>
         <Card.Body>
           <Card.Title> Register New Device</Card.Title>
           <ListGroup.Item><FontAwesomeIcon icon = {faPlus}/></ListGroup.Item>

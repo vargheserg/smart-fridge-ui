@@ -63,7 +63,6 @@ const getFridgesFromDB = async (uid) => {
   try {
     const user_doc = await getUserFromDB(uid)
     const user_doc_id = user_doc.doc_id
-    //console.log(`User Doc ${user_doc}`);
     const fridgeQuery = query(collection(db, "users", user_doc_id, "fridges"));
     const doc = await getDocs(fridgeQuery);
     const data = []
