@@ -66,6 +66,8 @@ const FridgeList = () => {
         });
     setShow(false);
   };
+
+  const deleteFridge = (e, fridge) => {
     e.stopPropagation();
     if(fridge != null && fridge.ip != null)
     fetch(`http://${fridge.ip}:5000/deregister`, {method: "DELETE", headers: {'Content-Type': 'application/json'}})
