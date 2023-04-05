@@ -6,7 +6,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../UserContext';
 import { getFridgeFromDB } from '../../firebase/firebase';
-import Fridge from './Fridge.jpg'
 import ListGroup from 'react-bootstrap/ListGroup';
 import Card from 'react-bootstrap/Card';
 function Dashboard() {
@@ -56,7 +55,7 @@ function Dashboard() {
           </Card.Body>
         </Card>
         <Card style={{ width: '18rem' }}>
-          <Card.Img variant="top" src={Fridge} />
+          <Card.Img variant="top" src={fridge.image != null ? fridge.image : ""} />
           <Card.Body>
             <Card.Title>Check Out Your Fridge</Card.Title>
           </Card.Body>
