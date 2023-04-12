@@ -5,19 +5,94 @@ import NavigatorComponent from '../../components/navigator/NavigatorComponent';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../UserContext';
-import { getFridgeFromDB } from '../../firebase/firebase';
+import { getFridgeFromDB, updateFridgeTrackingFromDB } from '../../firebase/firebase';
+import Modal from 'react-bootstrap/Modal';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Card from 'react-bootstrap/Card';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import CloseButton from 'react-bootstrap/CloseButton';
+import Button from 'react-bootstrap/Button';
+
 function Dashboard() {
   const [userAcc] = useContext(UserContext);
-  const [fridge, setFridge] = useState({tracking: [], items: []});
+  const [items, setItems] = useState({});
+  const [tracking, setTracking] = useState({});
+  const [trackingForm, setTrackingForm] = useState({});
+  const [image, setImage] = useState("");
+  const [missingIngredients, setMissingIngredients] = useState({});
+  const [show, setShow] = useState(false);
+  const [newIngredient, setNewIngredient] = useState("");
+  const [newIngredientCount, setNewIngredientCount] = useState(0);
   const {fridge_id} = useParams()
   let navigate = useNavigate();
 
   const retrieveFridge = async (uid) => {
     const data = await getFridgeFromDB(uid, fridge_id);
-    if(data != null)
-      setFridge(data);
+    if(data != null) {
+      setItems(data.items);
+      setTracking(data.tracking);
+      setImage(data.image);
+      var missingItems = {};
+      for (const [ingredient, count] of Object.entries(data.tracking)) {
+        var deltaCount = count;
+        if (ingredient in data.items) {
+          deltaCount = deltaCount - data.items[ingredient];
+        }
+        if(deltaCount > 0) {
+          missingItems[ingredient] = deltaCount;
+        }
+      }
+      setMissingIngredients(missingItems);
+      }
+  };
+
+  const handleClose = () => {
+    setShow(false)
+  };
+
+  const handleRemove = (ingredient) => {
+    let newTrackingForm = {...trackingForm}
+    delete newTrackingForm[ingredient];
+    setTrackingForm(newTrackingForm);
+  };
+
+  const handleAdd = () => {
+    let newTrackingForm = {...trackingForm}
+    const toAdd = newIngredientCount
+    if(newIngredient) {
+      newTrackingForm[newIngredient] = toAdd;
+      setNewIngredient("");
+      setNewIngredientCount(0);
+      setTrackingForm(newTrackingForm);
+    }
+
+  };
+
+  const handleEdit = (ingredient, newCount) => {
+    if(parseInt(newCount) != NaN){
+      let newTrackingForm = {...trackingForm}
+      newTrackingForm[ingredient] = newCount;
+      setTrackingForm(newTrackingForm);
+    }
+  };
+
+  const handleSubmit = () => {
+    const authToken = sessionStorage.getItem("Auth Token");
+    const uid = sessionStorage.getItem("uid");
+    if (!authToken) {
+      navigate("/login");
+    } else if (uid && authToken) {
+      updateFridgeTrackingFromDB(uid, fridge_id, trackingForm)
+      retrieveFridge(uid);
+      handleClose();
+    }
+  };
+
+  const handleShow = () => {
+    setShow(true);
+    setTrackingForm(tracking);
   };
 
   useEffect(() => {
@@ -26,9 +101,9 @@ function Dashboard() {
     if (!authToken) {
       navigate("/login");
     } else if (uid && authToken) {
-      retrieveFridge(uid)
+      retrieveFridge(uid);
     }
-  }, [userAcc]);
+  }, [userAcc, show]);
 
   return (
     <div className="Dashboard">
@@ -38,28 +113,68 @@ function Dashboard() {
           <Card.Body>
             <Card.Title>Ingredients</Card.Title>
             <ListGroup variant="flush">
-            {Object.keys(fridge.items).map((key) => 
-              <ListGroup.Item key={key}>{key} {fridge.items[key]}</ListGroup.Item>
+            {Object.entries(items).map(([ingredient, count]) => 
+              <ListGroup.Item key={ingredient}>{ingredient} {count}</ListGroup.Item>
             )}
             </ListGroup>
           </Card.Body>
         </Card>
-        <Card style={{ width: '18rem' }} class="card">
+        <Card style={{ width: '18rem', cursor: "pointer" }} onClick={handleShow} class="card">
           <Card.Body>
             <Card.Title>Grocery List</Card.Title>
             <ListGroup variant="flush">
-            {fridge.tracking.map((item) => 
-              <ListGroup.Item key={item}>{item}</ListGroup.Item>
+            {Object.entries(missingIngredients).map(([ingredient, count]) => 
+              <ListGroup.Item key={ingredient}>{ingredient} {count}</ListGroup.Item>
             )}
             </ListGroup>
           </Card.Body>
         </Card>
-        <Card style={{ width: '18rem' }}>
-          <Card.Img variant="top" src={fridge.image != null ? fridge.image : ""} />
+        <Card style={{ width: '18rem'}}>
+          <Card.Img variant="top" src={image != null ? image : ""} />
           <Card.Body>
             <Card.Title>Check Out Your Fridge</Card.Title>
           </Card.Body>
         </Card>
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Track Ingredients</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          {Object.entries(trackingForm).map(([ingredient, count]) => 
+              <div key={ingredient} class="form-row">
+                <Row>
+                  <Col xs={4}>
+                    <div class="row-element">{ingredient}</div>
+                  </Col>
+                  <Col xs={7}>
+                    <Form.Control placeholder={count}  onChange={(e) => handleEdit(ingredient, e.target.value)} />
+                  </Col>
+                  <Col xs={1}>
+                    <div class="row-element"><CloseButton onClick={(e) => handleRemove(ingredient)}/></div>
+                  </Col>
+                </Row>
+              </div>
+            )}
+            <div class="form-row">
+              <Row>
+                <Col xs={4}>
+                <Form.Control placeholder="Ingredient" value={newIngredient} onChange={(e) => setNewIngredient(e.target.value)} />
+                </Col>
+                <Col xs={7}>
+                  <Form.Control value={newIngredientCount} onChange={(e) => setNewIngredientCount(parseInt(e.target.value))} />
+                </Col>
+                <Col xs={1}>
+                  <div class="add"><CloseButton onClick={(e) => handleAdd()}/></div>
+                </Col>
+              </Row>
+            <Row>
+            <Button variant="primary" style={{ marginTop: '1rem' }} onClick={() => handleSubmit()}>Submit</Button>
+            </Row>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+          </Modal.Footer>
+        </Modal>
     </div>
         <NavigatorComponent/>   
         <Footer />    

@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth";
-import { getFirestore, query, getDocs, collection, where, addDoc, getDoc } from "firebase/firestore";
+import { getFirestore, query, getDocs, setDoc, collection, where, addDoc, getDoc, doc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -94,6 +94,24 @@ const getFridgeFromDB = async (uid, fridge_id) => {
   }
 };
 
+const updateFridgeTrackingFromDB = async (uid, fridge_id, tracking) => {
+  try {
+    const user_doc = await getUserFromDB(uid)
+    const user_doc_id = user_doc.doc_id
+    const fridge_ref = query(doc(db, "users", user_doc_id, "fridges", fridge_id));
+    const fridge_doc = await getDoc(fridge_ref);
+    if(fridge_doc != null){
+      const fridge_data = fridge_doc.data()
+      fridge_data["tracking"] = tracking
+      return setDoc(fridge_ref, fridge_data);
+    }
+    return null;
+  } catch (err) {
+    console.log(err);
+    alert(err.message);
+  }
+};
+
 
 const logout = () => {
     signOut(auth);
@@ -102,6 +120,7 @@ const logout = () => {
 export {
     auth,
     db,
+    updateFridgeTrackingFromDB,
     logInWithEmailAndPassword,
     registerWithEmailAndPassword,
     getUserFromDB,

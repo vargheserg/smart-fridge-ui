@@ -9,3 +9,22 @@
   display: inline-block;
   margin: 0 auto;
 }
+
+.form-row{
+  text-align: center;
+  margin: 1em auto;
+  padding: 0 1em;
+}
+
+.row-input{
+  display: inline-block;
+  margin: 0 auto;
+}
+
+.row-element {
+  margin-top: 0.4em;
+}
+
+.add {
+  transform: rotate(45deg);
+}
