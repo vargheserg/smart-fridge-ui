@@ -10,6 +10,8 @@ import { UserContext } from "../../UserContext";
 import {
   getFridgeFromDB,
   updateFridgeTrackingFromDB,
+  db,
+  getUserFromDB,
 } from "../../firebase/firebase";
 import Modal from "react-bootstrap/Modal";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -19,6 +21,18 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import CloseButton from "react-bootstrap/CloseButton";
 import Button from "react-bootstrap/Button";
+import {
+  getFirestore,
+  query,
+  getDocs,
+  setDoc,
+  collection,
+  where,
+  addDoc,
+  getDoc,
+  doc,
+  onSnapshot,
+} from "firebase/firestore";
 
 function Dashboard() {
   const [userAcc] = useContext(UserContext);
@@ -32,6 +46,21 @@ function Dashboard() {
   const [newIngredientCount, setNewIngredientCount] = useState(0);
   const { fridge_id } = useParams();
   let navigate = useNavigate();
+
+  const listenToFridgeChanges = async (uid) => {
+    const user_doc = await getUserFromDB(uid);
+    const user_doc_id = user_doc.doc_id;
+    const fridgeQuery = query(collection(db, "users", user_doc_id, "fridges"));
+    onSnapshot(fridgeQuery, (snapshot) => {
+      console.log("fridge snapshot updated");
+      retrieveFridge(uid);
+    });
+  };
+
+  useEffect(() => {
+    const uid = sessionStorage.getItem("uid");
+    listenToFridgeChanges(uid);
+  }, []);
 
   const retrieveFridge = async (uid) => {
     const data = await getFridgeFromDB(uid, fridge_id);
