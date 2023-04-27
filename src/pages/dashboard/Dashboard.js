@@ -94,7 +94,7 @@ function Dashboard() {
 
   const handleAdd = () => {
     let newTrackingForm = { ...trackingForm };
-    const toAdd = newIngredientCount;
+    const toAdd = Number.isNaN(newIngredientCount) ? 0 : newIngredientCount;
     if (newIngredient) {
       newTrackingForm[newIngredient] = toAdd;
       setNewIngredient("");
@@ -106,7 +106,7 @@ function Dashboard() {
   const handleEdit = (ingredient, newCount) => {
     if (parseInt(newCount) != NaN) {
       let newTrackingForm = { ...trackingForm };
-      newTrackingForm[ingredient] = newCount;
+      newTrackingForm[ingredient] = Number.isNaN(parseInt(newCount)) ? 0 : parseInt(newCount);
       setTrackingForm(newTrackingForm);
     }
   };
@@ -216,7 +216,7 @@ function Dashboard() {
                   <Form.Control
                     value={newIngredientCount}
                     onChange={(e) =>
-                      setNewIngredientCount(parseInt(e.target.value))
+                      setNewIngredientCount(Number.isNaN(parseInt(e.target.value)) ? 0 : parseInt(e.target.value))
                     }
                   />
                 </Col>

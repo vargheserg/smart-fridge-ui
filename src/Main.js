@@ -5,6 +5,7 @@ import Dashboard from './pages/dashboard/Dashboard';
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
 import Fridges from './pages/fridges/Fridges';
+import Recipe from './pages/recipes/Recipe';
 import { UserContext } from './UserContext';
 import { getUserFromDB } from './firebase/firebase';
 
@@ -36,6 +37,7 @@ const Main = () => {
         <Route exact path='/login'  element={<Login/>}></Route>
         <Route exact path='/signup' element={<Signup/>}></Route>
         <Route exact path='/fridges' element={<Fridges/>}></Route>
+        <Route exact path='/recipes' element={<Recipe/>}></Route>
       </Routes>  
     </UserContext.Provider>
   );

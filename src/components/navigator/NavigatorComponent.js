@@ -26,7 +26,7 @@ function NavigatorComponent() {
         <div class="vr"></div>
         <FontAwesomeIcon icon = {faGrip} onClick={(e) => navigate("/fridges")}/>
         <div class="vr"></div>
-        <FontAwesomeIcon icon = {faUtensils}/>
+        <FontAwesomeIcon icon = {faUtensils} onClick={(e) => navigate("/recipes")}/>
       </Card.Body>
     </Card>
     
