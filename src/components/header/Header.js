@@ -6,7 +6,7 @@ class Header extends React.Component {
   render() {
     return (
       <div className="header">
-        Smart Fridge Prototype
+        IntelliFridge Add On
         {/* <button onClick={this.getHeader}>
         Click me!
         </button> */}
