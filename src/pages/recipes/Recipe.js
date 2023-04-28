@@ -51,7 +51,7 @@ const Recipe = () => {
       ingredientParam = ingredientParam.concat(ingredient, delimiter)
     }
     ingredientParam = ingredientParam.substring(0, ingredientParam.length - delimiter.length)
-    const response = await fetch(`https://api.spoonacular.com/recipes/findByIngredients?` + new URLSearchParams({
+    fetch(`https://api.spoonacular.com/recipes/findByIngredients?` + new URLSearchParams({
       ranking: 2,
       ingredients: ingredientParam,
       ignorePantry: false,
@@ -60,9 +60,30 @@ const Recipe = () => {
       method: "GET",
       headers: { "Content-Type": "application/json",
      },
-    });
-    console.log(response)
-    setIngredients(ingredientParam)
+    }).then((response) => response.json())
+    .then((data) => {
+      const whitelist = new Set(["Dried Fruits;Produce;Baking","Spices and Seasonings","Savory Snacks", "Ethnic Foods;Health Foods", "Cereal  "]);
+      const filteredRecipes = [];
+      for (var recipeIndex in data) {
+        var recipe = data[recipeIndex]
+        var validRecipe = true;
+        for(var missingIngredientIndex in recipe["missedIngredients"]) {
+          var missingIngredient = recipe["missedIngredients"][missingIngredientIndex];
+          if(!whitelist.has(missingIngredient["aisle"])) {
+            console.log(missingIngredient["name"]);
+            console.log(missingIngredient["aisle"]);
+            validRecipe = false;
+            break;
+          }
+        }
+        if(validRecipe) {
+          filteredRecipes.push(recipe);
+        }
+      }
+      console.log(filteredRecipes);
+      setIngredients(ingredientParam);
+      setRecipes(filteredRecipes);
+    });;
   };
 
   return (
