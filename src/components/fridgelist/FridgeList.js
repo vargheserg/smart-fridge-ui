@@ -142,6 +142,7 @@ const FridgeList = () => {
   }, [fridgeName]);
 
   return (
+    <div class="fridge-list">
     <div class="card-component grid">
       {fridges.map((fridge) => (
         <Card
@@ -228,6 +229,7 @@ const FridgeList = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+    </div>
     </div>
   );
 };

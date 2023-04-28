@@ -1,4 +1,5 @@
-.fridge-card {
+.fridge-list .card {
+    margin-top: 3em;
     transition: 0.5s;
 }
 

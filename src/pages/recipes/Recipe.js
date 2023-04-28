@@ -92,10 +92,9 @@ const Recipe = () => {
           key={recipe.id}
           data={recipe}
           style={{ width: "18rem" }}
-          class="card fridge-card"
-        >
+          class="card">
           <Card.Body>
-            <Card.Img variant="top" src={recipe.image} />
+            <Card.Img variant="top" src={recipe.image} width="auto" height="175"/>
             <Card.Title>
               {recipe.title}
             </Card.Title>

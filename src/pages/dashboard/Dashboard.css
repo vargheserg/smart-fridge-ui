@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   flex-flow: row wrap;
-  padding: 10px 400px;
+  padding: 10px 100px;
 }
 
 .card{

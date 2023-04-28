@@ -2,7 +2,7 @@
     position: fixed;
     display: flex;
     width: 100%;
-    bottom: 2em;
+    bottom: -0.8em;
     margin: auto;
     flex-flow: row wrap;
     padding: 60px 400px;
