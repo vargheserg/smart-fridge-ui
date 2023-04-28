@@ -35,7 +35,7 @@ const Recipe = () => {
   const retrieveFridges = async (uid) => {
     const fridges = await getFridgesFromDB(uid);
     setFridges(fridges);
-    const uniqueIngredients = new Set();
+    var uniqueIngredients = new Set();
     fridges.forEach((fridge) => {
         Object.keys(fridge.items).forEach((ingredient) => {
             uniqueIngredients.add(ingredient);
@@ -55,14 +55,14 @@ const Recipe = () => {
       ranking: 2,
       ingredients: ingredientParam,
       ignorePantry: false,
-      apiKey: "",
+      apiKey: process.env.REACT_APP_SPOONACULAR_API_KEY,
     }), {
       method: "GET",
       headers: { "Content-Type": "application/json",
      },
     }).then((response) => response.json())
     .then((data) => {
-      const whitelist = new Set(["Dried Fruits;Produce;Baking","Spices and Seasonings","Savory Snacks", "Ethnic Foods;Health Foods", "Cereal  "]);
+      const whitelist = new Set(["Dried Fruits;Produce;Baking","Spices and Seasonings","Savory Snacks", "Ethnic Foods;Health Foods", "Cereal", "Health Foods", "Beverages"]);
       const filteredRecipes = [];
       for (var recipeIndex in data) {
         var recipe = data[recipeIndex]
@@ -70,8 +70,6 @@ const Recipe = () => {
         for(var missingIngredientIndex in recipe["missedIngredients"]) {
           var missingIngredient = recipe["missedIngredients"][missingIngredientIndex];
           if(!whitelist.has(missingIngredient["aisle"])) {
-            console.log(missingIngredient["name"]);
-            console.log(missingIngredient["aisle"]);
             validRecipe = false;
             break;
           }
@@ -80,7 +78,6 @@ const Recipe = () => {
           filteredRecipes.push(recipe);
         }
       }
-      console.log(filteredRecipes);
       setIngredients(ingredientParam);
       setRecipes(filteredRecipes);
     });;
@@ -90,20 +87,28 @@ const Recipe = () => {
     <div><Header />
     <div class="card-component grid">
         
-      {fridges.map((fridge) => (
+      {recipes.map((recipe) => (
         <Card
-          key={fridge.doc_id}
-          data={fridge}
+          key={recipe.id}
+          data={recipe}
           style={{ width: "18rem" }}
           class="card fridge-card"
         >
           <Card.Body>
+            <Card.Img variant="top" src={recipe.image} />
             <Card.Title>
-              {fridge.name}{" "}
+              {recipe.title}
             </Card.Title>
+            {recipe.usedIngredients.map((ingredient) =>
             <ListGroup.Item>
-              Ingredients: {ingredient}
+            {ingredient.name} : {ingredient.amount} {ingredient.unit}
             </ListGroup.Item>
+            )}
+            {recipe.missedIngredients.map((ingredient) =>
+            <ListGroup.Item>
+            {ingredient.name} : {ingredient.amount} {ingredient.unit}
+            </ListGroup.Item>
+            )}
           </Card.Body>
         </Card>
       ))}
